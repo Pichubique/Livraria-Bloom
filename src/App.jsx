@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import {
+  carregarCarrinho,
+  salvarCarrinho,
+  adicionarProduto,
+  removerProduto,
+  aumentarQuantidade,
+  calculoTotal,
+  esvaziarCarrinho
+} from './componentes/carrinho'
 
 
 function App() {
@@ -11,6 +20,8 @@ function App() {
   const [erro,setErro] = useState(false)
   const [quantidadeVisivel, setQuantidadeVisivel] = useState(10)
   const [catalogo, setCatalogo] = useState([])
+  const [carrinho, setCarrinho] = useState(carregarCarrinho)
+  const [mostrarCarrinho, setMostrarCarrinho] = useState(false)
 
   
 
@@ -94,6 +105,10 @@ function App() {
 
 }, [])
 
+  useEffect(() => {
+  salvarCarrinho(carrinho)
+}, [carrinho])
+
 function carregarMais() {
 
   const novaQuantidade = Math.min(quantidadeVisivel + 10, 20)
@@ -103,6 +118,34 @@ function carregarMais() {
   setLivros(catalogo.slice(0, novaQuantidade))
 
 }
+
+// FUNÇÕES DO CARRINHO
+
+function adicionarAoCarrinho(livro) {
+  setCarrinho(atual => adicionarProduto(atual, livro))
+}
+
+function aumentarItem(id) {
+  setCarrinho(atual => aumentarQuantidade(atual, id))
+}
+
+function diminuirItem(id) {
+  setCarrinho(atual => removerProduto(atual, id))
+}
+
+function limparCarrinho() {
+  setCarrinho(esvaziarCarrinho())
+}
+
+
+// CÁLCULOS DO CARRINHO
+
+const totalCarrinho = calculoTotal(carrinho)
+
+const quantidadeCarrinho = carrinho.reduce(
+  (total, item) => total + item.quantidade,
+  0
+)
 
   return(
     <>
@@ -144,9 +187,10 @@ function carregarMais() {
 
     <span className='separador'></span>
 
-    <a href="#" className='carrinho'>🛒 Carrinho 
-      <span className='contador'>0</span>
-    </a>
+    <button className='carrinho' onClick={() => setMostrarCarrinho(!mostrarCarrinho)}>
+      🛒 Carrinho 
+      <span className='contador'>{quantidadeCarrinho}</span>
+    </button>
     
 
   </div>
@@ -154,7 +198,61 @@ function carregarMais() {
   </div>
 
   </header>
+  {mostrarCarrinho && (
+  <div className="painelCarrinho">
 
+    <h2>Meu carrinho</h2>
+
+    <button onClick={() => setMostrarCarrinho(false)}>
+      Fechar
+    </button>
+
+    {carrinho.length === 0 ? (
+      <p>Seu carrinho está vazio.</p>
+    ) : (
+
+      <>
+        <ul id="listaCarrinho">
+
+          {carrinho.map(item => (
+            <li key={item.id}>
+
+              <span>
+                {item.nome} x{item.quantidade}
+              </span>
+
+              <span>
+                R$ {(item.preco * item.quantidade)
+                  .toFixed(2)
+                  .replace('.', ',')}
+              </span>
+
+              <button onClick={() => aumentarItem(item.id)}>
+                +
+              </button>
+
+              <button onClick={() => diminuirItem(item.id)}>
+                -
+              </button>
+
+            </li>
+          ))}
+
+        </ul>
+
+        <h3>
+          Total: R$ {totalCarrinho.toFixed(2).replace('.', ',')}
+        </h3>
+
+        <button onClick={limparCarrinho}>
+          Esvaziar carrinho
+        </button>
+      </>
+
+    )}
+
+  </div>
+)}
     <main>
         
 
@@ -266,6 +364,10 @@ function carregarMais() {
     <p className='preco'>
       R$ {livro.preco.toFixed(2).replace('.', ',')}
     </p>
+
+    <button onClick={() => adicionarAoCarrinho(livro)}>
+    Adicionar ao carrinho
+    </button>
 
   </div>
         

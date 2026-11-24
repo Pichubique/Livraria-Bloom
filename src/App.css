@@ -121,6 +121,161 @@ gap: 25px;
   background-color: #71697b;
 }
 
+
+/* PAINEL DO CARRINHO */
+
+.painelCarrinho {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    width: 380px;
+    max-width: calc(100vw - 40px);
+    max-height: 75vh;
+    overflow-y: auto;
+
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 15px;
+
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+
+    z-index: 1000;
+    animation: aparecerCarrinho 0.25s ease;
+}
+
+@keyframes aparecerCarrinho {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* CABEÇALHO DO PAINEL */
+
+.painelCarrinho h2 {
+    color: #49334f;
+    font-size: 24px;
+    margin: 0;
+}
+
+.painelCarrinho > button:first-of-type {
+    background: transparent;
+    border: none;
+    color: #777;
+    cursor: pointer;
+    padding: 8px;
+    margin: 10px 0;
+}
+
+/* LISTA DE PRODUTOS */
+
+.listaCarrinho {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.listaCarrinho li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.listaCarrinho li span {
+    font-size: 14px;
+    color: #444;
+}
+
+/* BOTÕES DE QUANTIDADE */
+
+.listaCarrinho button {
+    width: 30px;
+    height: 30px;
+
+    border: none;
+    border-radius: 6px;
+
+    background-color: #eee5f0;
+    color: #49334f;
+
+    font-size: 18px;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.listaCarrinho button:hover {
+    background-color: #d9c5df;
+}
+
+/* TOTAL */
+
+.painelCarrinho h3 {
+    color: #49334f;
+    font-size: 20px;
+    text-align: right;
+    margin-top: 20px;
+}
+
+/* ESVAZIAR CARRINHO */
+
+.painelCarrinho button:last-child {
+    cursor: pointer;
+}
+
+.painelCarrinho > button:last-child {
+    width: 100%;
+    padding: 12px;
+
+    background-color: #49334f;
+    color: white;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    transition: 0.2s;
+}
+
+.painelCarrinho > button:last-child:hover {
+    background-color: #674b70;
+}
+
+/* MENSAGEM DE CARRINHO VAZIO */
+
+.painelCarrinho > p {
+    text-align: center;
+    color: #888;
+    padding: 25px 0;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 480px) {
+    .painelCarrinho {
+        top: 75px;
+        right: 10px;
+        width: calc(100vw - 50px);
+        padding: 18px;
+    }
+
+    .listaCarrinho li {
+        flex-wrap: wrap;
+    }
+}
+
+
 .contador{
   display: inline-flex;
   align-items: center;
@@ -185,7 +340,7 @@ body{
     max-width: 650px;
 }
 
-/* Subtítulo */
+/* Sub-título */
 
 .banner_subtitulo {
     font-size: 16px;
