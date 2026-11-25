@@ -18,11 +18,13 @@ function App() {
   const [livros,setLivros] = useState([])
   const [carregando,setCarregando] = useState(true)
   const [erro,setErro] = useState(false)
-  const [quantidadeVisivel, setQuantidadeVisivel] = useState(10)
+  const [quantidadeVisivel, setQuantidadeVisivel] = useState(20)
   const [catalogo, setCatalogo] = useState([])
   const [carrinho, setCarrinho] = useState(carregarCarrinho)
   const [mostrarCarrinho, setMostrarCarrinho] = useState(false)
-
+  const [filtroSuspense,setFiltroSuspense] = useState(false)
+  const [filtroRomance, setFiltroRomance] = useState(false)  
+  const [termoBusca, setTermoBusca] = useState('')
   
 
   useEffect(() => {
@@ -69,7 +71,7 @@ function App() {
 
             // Preço fictício para demonstração.
             // Depois podemos criar preços individuais.
-            preco: 49.90
+            preco: 67.69
           }))
 
         })
@@ -77,6 +79,18 @@ function App() {
       )
 
       const todosLivros = resultados.flat()
+
+      console.log('livros encontrados:', todosLivros)
+
+      console.log(
+        'Suspense:',
+      todosLivros.filter(livro => livro.genero === 'Suspense').length
+    )
+
+    console.log(
+      'Suspense',
+      todosLivros.filter(livro => livro.genero === 'Romance').length
+    )
 
       // Evita livros repetidos
       const livrosUnicos = Array.from(
@@ -111,13 +125,26 @@ function App() {
 
 function carregarMais() {
 
-  const novaQuantidade = Math.min(quantidadeVisivel + 10, 20)
-
-  setQuantidadeVisivel(novaQuantidade)
-
-  setLivros(catalogo.slice(0, novaQuantidade))
+ setQuantidadeVisivel(atual => atual + 10)
 
 }
+
+const livrosFiltrados = catalogo.filter(livro =>{
+  
+  const correpondeBusca =
+  livro.titulo.toLowerCase().includes(termoBusca.toLowerCase()) ||
+  livro.autor.toLowerCase().includes(termoBusca.toLowerCase()) ||
+  livro.tema.toLowerCase().includes(termoBusca.toLowerCase())
+
+  const correspondeGenero =
+  (filtroSuspense && filtroRomance) ||
+  (!filtroSuspense && !filtroRomance) ||
+  (filtroSuspense && livro.genero === 'Suspense') ||
+  (filtroRomance && livro.genero === 'Romance')
+
+  return correpondeBusca && correspondeGenero
+})
+ 
 
 // FUNÇÕES DO CARRINHO
 
@@ -296,17 +323,29 @@ const quantidadeCarrinho = carrinho.reduce(
       <div className="filtros">
 
         <label>
-          <input type="checkbox" />
+          <input type="checkbox"
+          checked={filtroSuspense}
+          onChange={(e) => setFiltroSuspense(e.target.checked)}
+          />
           ♧ Suspense
         </label>
 
         <label>
-          <input type="checkbox" />
+          <input type="checkbox"
+          checked={filtroRomance}
+          onChange={(e) => setFiltroRomance(e.target.checked)}
+          />
           ♡ Romance
         </label>
 
         <label>
-          <input type="checkbox" />
+          <input type="checkbox"
+          checked={filtroSuspense && filtroRomance}
+          onChange={(e) =>{
+            setFiltroSuspense(e.target.checked)
+            setFiltroRomance(e.target.checked)
+          }} 
+          />
           Ambos
         </label>
 
@@ -329,8 +368,13 @@ const quantidadeCarrinho = carrinho.reduce(
 
     <div className='listaLivro'>
 
+      {!carregando && livrosFiltrados.length === 0 &&(
+        <p>Nenhum livro encontrado para esse Gênero</p>
+      )}
+
+
      
-  {livros.map((livro) => (
+  {livrosFiltrados.slice(0, quantidadeVisivel).map((livro) => (
 
   <div className='livroCard' key={livro.id}>
 
@@ -380,7 +424,7 @@ const quantidadeCarrinho = carrinho.reduce(
 
 {erro && <p>Erro ao carregar livros </p>}
 
-{livros.length < Math.min(catalogo.length, 20) && (
+{quantidadeVisivel < livrosFiltrados.length && (
 
   <button 
   className='botaoCarregar'
