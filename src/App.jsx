@@ -34,7 +34,7 @@ function App() {
     try {
 
       const generos = [
-        { nome: 'Suspense', assunto: 'thrillers' },
+        { nome: 'Suspense', assunto: 'thriller' },
         { nome: 'Romance', assunto: 'romance' }
       ]
 
@@ -43,7 +43,8 @@ function App() {
         generos.map(async genero => {
 
           const parametros = new URLSearchParams({
-            q: `subject:${genero.assunto} AND language:por`,
+            q: `subject:${genero.assunto}`,
+            lang: 'pt',
             sort: 'random',
             limit: '20',
             fields: 'key,title,author_name,cover_i,publisher'
@@ -134,7 +135,7 @@ const livrosFiltrados = catalogo.filter(livro =>{
   const correpondeBusca =
   livro.titulo.toLowerCase().includes(termoBusca.toLowerCase()) ||
   livro.autor.toLowerCase().includes(termoBusca.toLowerCase()) ||
-  livro.tema.toLowerCase().includes(termoBusca.toLowerCase())
+  livro.editora.toLowerCase().includes(termoBusca.toLowerCase())
 
   const correspondeGenero =
   (filtroSuspense && filtroRomance) ||
@@ -204,7 +205,11 @@ const quantidadeCarrinho = carrinho.reduce(
      <div className='pesquisa'>
       <span>⌕</span>
 
-      <input type="text" placeholder='Buscar por titulo/autor(a) ou editora...' />
+      <input type="text"
+       placeholder='Buscar por titulo/autor(a) ou editora...'
+       value={termoBusca}
+       onChange={(e) => setTermoBusca(e.target.value)}
+       />
      </div>
 
      {/* ações do usuario */}
@@ -313,10 +318,9 @@ const quantidadeCarrinho = carrinho.reduce(
         <input
           type="text"
           placeholder="Buscar por título, autor ou editora..."
+          value={termoBusca}
+          onChange={(e) => setTermoBusca(e.target.value)}
         />
-
-        <button>Buscar</button>
-
       </div>
 
       {/* Filtros de gênero */}
